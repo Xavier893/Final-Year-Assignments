@@ -1,0 +1,49 @@
+\documentclass{article}
+
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{hyperref}
+
+\title{COS333 Practical 1 Research Paper} 
+
+\author{Xavier Reynolds, u20526254}
+
+\begin{document}
+
+\date{}
+\maketitle
+
+\section*{Research Questions}
+
+\begin{enumerate}
+    \item The Turing completeness of TEX implies that the typesetting language can be used for more than just making documents. It can theoretically do computations and perform instructions that any other language can. 
+    Loops, calculations and many other features that Turing-complete programs can do, can also be done in TEX. An advantage of this is that it gives a high degree of flexibility for documentation. 
+    On the other hand, the disadvantage of this is that  programs can become very complex and hard to understand. Debugging errors can become troublesome because of the mix between programming and documentation with typesetting. \cite{tex_wiki}
+    
+    \item An esoteric programming language is a language that strays away from the mainstream development system. It is made by developers either as a fun side project, a proof of concept or “software art”. \cite{eso_wiki}
+    
+    \item The argument that esoteric languages are little more than amusing diversion for computer science researchers are generally true. They stray away from the normal languages used to develop mainstream platforms and applications. Malbolge, as an example, is known as one of the most difficult esoteric languages that exist. It is known for its high complexity and it is extremely difficult to understand. If it was named after the 8th circle of Hell, then the name speaks for itself. INTERCAL, made by Don Woods in 1972, the “prehistoric esolang” was also considered as the first “joke” language. This confirms the fact that esoteric languages are generally no more than amusements.
+    There are other uses of esoteric languages that strays away from the argument that their sole purpose are for amusement. Esoteric languages push the boundaries of computation. FALSE, made by Wouter van Oortmerssen in 1993, had the goal to be the language designed with the smallest compiler. Although it was difficult to understand, this held true. It inspired Brainfuck, made by Urban Muller in 1993, one of the most famous esoteric languages in the world. Brainfuck had a compiler of 240 bytes, which is very small for a programming language. \cite{intercal} \cite{eso_malbolge} \cite{wiki_malbolge} \cite{false}
+    
+    \item 
+        \textbf{Brainfuck} \\
+        Brainfuck is an esolang designed by Urban Müller in 1993. It has eight comamnds and operates on an array of memory cells, each initially set to zero. Each of these eight commands manipulate the values in each of the memory cells. An example of this is +. + increments the memory cell at the pointer. The semantic characteristics of the language is that it uses a simple memory model with an array of cells. Loops can be perfomed by using the '[' and ']' structures. ',' and '.' also provides functionality for input and output. Due to the minimalistic design of Brainfuck, it makes it difficult to write programs. When the array is unbounded or when it's at least three cells long and can store unbounded values, Brainfuck is Turing complete. \cite{brainfuck}
+
+        \textbf{Malbolge} \\
+        Malbolge was invented in 1998 by Ben Olmsted. It was designed to be as difficult to program in as possible. Malbolge has three registers, 'a' for the accumulator, 'c' for the code pointer and 'd' for the data pointer. All three of these registers are initially set to zero.
+        It uses pointer notation with square brackets '[]' representing values stored in memory addresses. Before execution, the initial memory is filled with the program. It has eight instructions, each with an opcode for the instruction. Some of them are: 'i', '/', '*', 'j', 'p', 'o', 'v'.
+        'a' is the accumulator used for standard I/O, 'c' is the code pointer pointing to the current instruction, and 'd' is the data pointer automatically incremented after each instruction. Malbolge uses the same memory space for both data and instructions. 
+        Malbolge is argued to be Turing complete. The difficulty in showing this is in showing that 59049 memory words are enough to implement the FSA that simulates a universal Turing machine. \cite{eso_malbolge} \cite{wiki_malbolge}
+
+    \item Bash can be considered a programming language due to the fact that you can use functions with control flow. It allows for code reusability, accept arguments and perform operations based on conditions. The reason that it cannot be considered as a programming language is that it is a CLI (command-line-interface).
+    It was solely created as a scrpting interface for the command line. It does automation and controls the operating system through scripts, and it's complexity falls behind on other languages like Python. \cite{bash_codeacademy} \cite{bash_functions}
+    
+    \item  ALF was made to integrate both logic and functional paradigms. \cite{alf}
+    
+    \item Visual Logic is a programming language that provides a minimal-syntax introduction to essential programming concepts including variables, input, assignment, output, conditions, loops, procedures, arrays and files. It has very little syntax and uses a Graphical User Interface to create programs. Visual elements (blocks and symbols) are used to represent programming constructs such as loops, conditions and functions. The placement of these blocks and the connections between them determine the flow of the program. Drag-and-drop actions are used to make these blocks, and are connected by symbols like an arrow to represent the program flow. \cite{vl}
+    
+    \item Dr. Memory is a memory monitoring tool capable of identifying memory-related programming errors such as accesses of uninitialized memory, accesses to unaddressable memory (including outside of allocated heap units and heap underflow and overflow), accesses to freed memory, double frees, memory leaks, and (on Windows) handle leaks, GDI API usage errors, and accesses to un-reserved thread local storage slots. ~\cite{drmem}
+\end{enumerate}
+
+\bibliography{citations.bib}
+\bibliographystyle{IEEEtran}
+\end{document}

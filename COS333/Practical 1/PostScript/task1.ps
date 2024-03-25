@@ -1,0 +1,55 @@
+%!PS-Adobe-3.0
+
+/numCircles 6 def
+
+% Circle size
+/radius 20 def
+
+% Starting point
+/centerX 300 def
+/centerY 300 def
+
+% 60 degree separation between the 
+/angleStep 360 numCircles div def
+
+% Number to give spacing around the centerpoint (300, 300)
+/separationFactor 2.5 def
+
+/i 0 def
+
+numCircles {
+
+    % Angle = i * (360/6)
+    /angle i angleStep mul def
+
+    % x = centerX + radius * cos(angle) * seperationFactor
+    % using cos to get the x-coordinate from polar coordinate to Cartesian coordinate
+    % cos(angle) = x-coordinate
+    % multiplying by the seperationFactor gives it space around the centerX and centerY
+    /resultX centerX angle cos radius mul separationFactor mul add def
+
+    % y = centerY + radius * sin(anlge) * seperationFactor
+    % using sin to get y-coordinate from polar coordinate to Cartesian coordinate
+    % sin(angle) = y-coordinate
+    % multiplying by the seperationFactor gives it space around the centerX and centerY
+    /resultY centerY angle sin radius mul separationFactor mul add def
+
+    i 2 mod 0 eq {
+        % True (even index) -> no fill
+        newpath 
+        resultX resultY radius 0 360 arc
+        stroke
+    } {
+        % False (odd index) -> fill
+        newpath
+        resultX resultY radius 0 360 arc
+        fill
+    }
+    ifelse
+
+    % Add 1 to i
+    /i i 1 add def
+    
+} repeat
+
+showpage
