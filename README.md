@@ -1,2 +1,5 @@
-# cs-final-year
-All assignments for CS Final Year
+# CS Final Year Practicals and Assignments
+
+All modules in repo:
+- COS314
+- COS333
