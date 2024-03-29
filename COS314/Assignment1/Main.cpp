@@ -11,7 +11,7 @@ using namespace std;
 
 const int NUM_CAMPUSES = 5;
 const int MAX_ITERATIONS = 1000;
-const int MAX_IMPROVEMENTS = 100;
+const double T0 = 1000.0;
 const string campuses[NUM_CAMPUSES] = {"Hatfield", "Hillcrest", "Groenkloof", "Prinshof", "Mamelodi"};
 
 // Cost matrix
@@ -48,83 +48,131 @@ int calculateDistance(const vector<int>& route) {
     return totalDistance;
 }
 
+void applyPerturbation(vector<int>& route) {
+    random_device rd;
+    mt19937 g(rd());
+    shuffle(route.begin() + 1, route.end(), g);
+}
+
 //! Hill Climbing algorithm
 vector<int> hillClimb(const vector<int>& solution) {
-    vector<int> currentRoute = solution;
-    int currentDistance = calculateDistance(currentRoute);
-    //! This variable will check for consecutive improvements
-    int improvements = 0;
+    vector<int> currentSolution = solution;
+    int currentDistance = calculateDistance(currentSolution);
+    bool improved = true;
 
-    while (improvements < MAX_IMPROVEMENTS) {
-        bool improved = false;
-        for (size_t i = 1; i < currentRoute.size() - 1; i++) {
-            for (size_t j = i + 1; j < currentRoute.size(); j++) {
-                vector<int> newRoute = currentRoute;
-                swap(newRoute[i], newRoute[j]);
-                int newDistance = calculateDistance(newRoute);
+    while (improved) {
+        improved = false;
+        for (size_t i = 1; i < currentSolution.size() - 1; i++) {
+            for (size_t j = i + 1; j < currentSolution.size(); j++) {
+
+                // Vector storing new solution
+                vector<int> newSolution = currentSolution;
+
+                // Shuffling of campuses 
+                random_device rd;
+                mt19937 g(rd());
+                shuffle(newSolution.begin() + 1, newSolution.end() - 1, g); // Shuffle the middle of the route to check for improvements
+
+                int newDistance = calculateDistance(newSolution);
+
                 if (newDistance < currentDistance) {
-                    currentRoute = newRoute;
+                    currentSolution = newSolution;
                     currentDistance = newDistance;
-                    improved = true; //* Improvement made
-                    improvements = 0; //* Reset consecutive iterations without improvement
+                    improved = true;
                 }
             }
         }
-        //* If no improvement -> no swap made
-        //! Terminations basically, if it reaches MAX_IMPROVEMENTS then stuck on local optima
-        if (!improved)
-            improvements++;
     }
 
-    return currentRoute; 
+    return currentSolution;
 }
 
 // Main Iterated Local Search function
 vector<int> iteratedLocalSearch() {
+    //* Step 1: Generate initial solution
+    vector<int> initialSolution = generateInitialSolution();
+
+    //* Step 2+3: Apply Local Search to initial solution and find local optimum
+    vector<int> improvedSolution = hillClimb(initialSolution);
+
+    //! Termination Criteria = MAX_ITERATIONS
+    for (int i = 0; i < MAX_ITERATIONS; i++) {
+        //* Step 4: Perturb solution
+        applyPerturbation(improvedSolution);
+
+        //* Step 5: Apply Local Search to perturbed solution
+        vector<int> newSolution = hillClimb(improvedSolution);
+
+        //* Update current solution if new solution is better
+        if (calculateDistance(newSolution) < calculateDistance(improvedSolution))
+            improvedSolution = newSolution;
+    }
+
+    return improvedSolution;
+}
+
+vector<int> simulatedAnnealing() {
+    //* Step 1: Generate initial solution
     vector<int> currentSolution = generateInitialSolution();
     vector<int> bestSolution = currentSolution;
-    int bestDistance = calculateDistance(bestSolution);
-    //* Random seed generation
-    default_random_engine rng(time(nullptr));
 
-    for (int i = 0; i < MAX_ITERATIONS; i++) {
-        //Perturbation routes by swapping two campuses
-        vector<int> perturbedRoute = bestSolution;
-        // Range of 1 to NUM_CAMPUSES - 1
-        uniform_int_distribution<int> distribution(1, NUM_CAMPUSES - 1); //! Exclude Hatfield and last index
-        // Generate two random indexes in the distribution
-        int index1 = distribution(rng);
-        int index2 = distribution(rng);
-        // Perform perturbation
-        swap(perturbedRoute[index1], perturbedRoute[index2]);
+    double T = T0;
+    int t = 1;
+    int N = 100;
+
+    while (t <= MAX_ITERATIONS) {
+        //* Step 2: Generate neighbour
+        vector<int> nextSolution = currentSolution;
+        applyPerturbation(nextSolution); //! Using perturbation function
+
+        //* Step 3: Get delta cost
+        int deltaCost = calculateDistance(nextSolution) - calculateDistance(currentSolution);
+
+        //* Accept or reject next state based on probability
+        if (deltaCost < 0 || exp(-deltaCost / T) > (double)rand() / RAND_MAX) 
+            currentSolution = nextSolution;
         
-        // Perform HillClimb on perturbed solution
-        vector<int> newRoute = hillClimb(perturbedRoute);
-        int newDistance = calculateDistance(newRoute);
+        //* Update current if needed
+        if (calculateDistance(currentSolution) < calculateDistance(bestSolution))
+            bestSolution = currentSolution;
 
-        // Accept if newRoute is an improvement
-        if (newDistance < bestDistance) {
-            bestSolution = newRoute;
-            bestDistance = newDistance;
-        }
+        t++; // t = t + 1
+        T = T0 / log(t+1); // T = T_0 / log(t+1)
+
+        //* No improvement for N iterations
+        //* The number of iterations since the last improvement in the best solution is a multiple of N (t % N == 0).
+        //* The distance of the current solution is greater than or equal to the distance of the best solution (no improvement for N iterations).
+        if (t % N == 0 && calculateDistance(currentSolution) >= calculateDistance(bestSolution))
+            break;
     }
+
     return bestSolution;
 }
 
 int main() {
-    vector<int> bestRoute = iteratedLocalSearch();
+    vector<int> bestRouteILS = iteratedLocalSearch();
     
-    // Print the best route found
+    // Print the best route found for ILS
     cout << "Best Route (ILS with Hill Climbing): ";
-    for (size_t i = 0; i < bestRoute.size(); i++) {
-        if (i < bestRoute.size() -1)
-            cout << campuses[i] << " -> ";
+    for (size_t i = 0; i < bestRouteILS.size(); i++) {
+        if (i < bestRouteILS.size() -1)
+            cout << campuses[bestRouteILS[i]] << " -> ";
         else 
-            cout << campuses[i] << " -> Hatfield";
+            cout << campuses[bestRouteILS[i]] << " -> Hatfield" << endl;
     }
+    cout << "Shortest Distance: " << calculateDistance(bestRouteILS) << endl;
 
-    cout << endl;
-    cout << "Shortest Distance: " << calculateDistance(bestRoute) << endl;
+    vector<int> bestRouteSA = iteratedLocalSearch();
+    
+    // Print the best route found for SA
+    cout << "Best Route (Simulated Annealing): ";
+    for (size_t i = 0; i < bestRouteSA.size(); i++) {
+        if (i < bestRouteSA.size() -1)
+            cout << campuses[bestRouteSA[i]] << " -> ";
+        else 
+            cout << campuses[bestRouteSA[i]] << " -> Hatfield" << endl;
+    }
+    cout << "Shortest Distance: " << calculateDistance(bestRouteSA) << endl;
 
     return 0;
 }
