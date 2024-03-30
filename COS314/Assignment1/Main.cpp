@@ -49,7 +49,7 @@ int calculateDistance(const vector<int>& route) {
     for (size_t i = 0; i < route.size() - 1; ++i) {
         totalDistance += distances[route[i]][route[i+1]];
     }
-    totalDistance += distances[route.back()][route[0]];  // Return to starting Hatfield
+    totalDistance += distances[route.back()][route[0]];  // Return to starting point Hatfield
     return totalDistance;
 }
 
@@ -157,7 +157,13 @@ vector<int> simulatedAnnealing() {
 }
 
 int main() {
+    //! Using chrono to get the runtime results
+
+    //* Start time measurement for ILS algorithm
+    auto startILS = chrono::high_resolution_clock::now();
     vector<int> bestRouteILS = iteratedLocalSearch();
+    auto endILS = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsedILS = endILS - startILS;
     
     // Print the best route found for ILS
     cout << "Best Route (ILS with Hill Climbing): ";
@@ -167,9 +173,17 @@ int main() {
         else 
             cout << campuses[bestRouteILS[i]] << " -> Hatfield" << endl;
     }
-    cout << "Shortest Distance: " << calculateDistance(bestRouteILS) << endl;
 
-    vector<int> bestRouteSA = iteratedLocalSearch();
+    //* Print shortest distance and runtime of ILS
+    cout << "Shortest Distance: " << calculateDistance(bestRouteILS) << endl;
+    cout << "Runtime (ILS): " << elapsedILS.count() << " seconds" << endl;
+
+    //* Start time measurement for SA
+
+    auto startSA = chrono::high_resolution_clock::now();
+    vector<int> bestRouteSA = simulatedAnnealing();
+    auto endSA = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsedSA = endSA - startSA;
     
     // Print the best route found for SA
     cout << "Best Route (Simulated Annealing): ";
@@ -179,7 +193,12 @@ int main() {
         else 
             cout << campuses[bestRouteSA[i]] << " -> Hatfield" << endl;
     }
+
+    //* Print shortest distance and runtime of SA
     cout << "Shortest Distance: " << calculateDistance(bestRouteSA) << endl;
+    cout << "Runtime (SA): " << elapsedSA.count() << " seconds" << endl;
+
+    //* Averages part
 
     return 0;
 }
