@@ -6,8 +6,13 @@
 #include <ctime>
 #include <cmath>
 #include <limits>
+#include <chrono>
 
 using namespace std;
+
+//! Variables used for ILS and SA averages
+vector<int> ilsAverage;
+vector<int> saAverage;
 
 const int NUM_CAMPUSES = 5;
 const int MAX_ITERATIONS = 1000;
@@ -106,6 +111,8 @@ vector<int> iteratedLocalSearch() {
         //* Update current solution if new solution is better
         if (calculateDistance(newSolution) < calculateDistance(improvedSolution))
             improvedSolution = newSolution;
+
+        ilsAverage.push_back(calculateDistance(improvedSolution));
     }
 
     return improvedSolution;
