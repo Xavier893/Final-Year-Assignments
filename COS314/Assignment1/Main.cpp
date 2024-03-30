@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <fstream>
 #include <numeric>
 #include <random>
 #include <ctime>
@@ -151,6 +152,8 @@ vector<int> simulatedAnnealing() {
         //* The distance of the current solution is greater than or equal to the distance of the best solution (no improvement for N iterations).
         if (t % N == 0 && calculateDistance(currentSolution) >= calculateDistance(bestSolution))
             break;
+
+        saAverage.push_back(calculateDistance(currentSolution));
     }
 
     return bestSolution;
@@ -175,7 +178,7 @@ int main() {
     }
 
     //* Print shortest distance and runtime of ILS
-    cout << "Shortest Distance: " << calculateDistance(bestRouteILS) << endl;
+    cout << "Shortest Distance (ILS): " << calculateDistance(bestRouteILS) << endl;
     cout << "Runtime (ILS): " << elapsedILS.count() << " seconds" << endl;
 
     //* Start time measurement for SA
@@ -195,10 +198,36 @@ int main() {
     }
 
     //* Print shortest distance and runtime of SA
-    cout << "Shortest Distance: " << calculateDistance(bestRouteSA) << endl;
+    cout << "Shortest Distance (SA): " << calculateDistance(bestRouteSA) << endl;
     cout << "Runtime (SA): " << elapsedSA.count() << " seconds" << endl;
 
     //* Averages part
+    //! ILS
+    double ilsAvgDistance = accumulate(ilsAverage.begin(), ilsAverage.end(), 0.0) / ilsAverage.size();
+    cout << "Average Distance (ILS): " << ilsAvgDistance << endl;
+    //! SA
+    double saAvgDistance = accumulate(saAverage.begin(), saAverage.end(), 0.0) / saAverage.size();
+    cout << "Average Distance (SA): " << saAvgDistance << endl;
+
+    //! Exporting the averages to a csv file for plotting
+    ofstream outputFile("results.csv");
+    if (outputFile.is_open()) {
+        size_t maxIterations = max(ilsAverage.size(), saAverage.size());
+        for (size_t i = 0; i < maxIterations; i++) {
+            if (i < ilsAverage.size()) {
+                outputFile << ilsAverage[i];
+            }
+            outputFile << ",";
+            if (i < saAverage.size()) {
+                outputFile << saAverage[i];
+            }
+            outputFile << "\n";
+        }
+        outputFile.close();
+        cout << "Results exported to results.csv" << endl;
+    } else {
+        cerr << "Error: Unable to open the output file!" << endl;
+    }
 
     return 0;
 }
