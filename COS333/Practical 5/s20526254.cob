@@ -30,6 +30,7 @@
             DISPLAY "Mode value: " MODE-VAL.
             STOP RUN.
 
+      *> This is a comment
         READDATA.
             PERFORM VARYING I FROM 1 BY 1 UNTIL I > NUM-ELEMENTS
                 DISPLAY "Enter value " I ": " 
