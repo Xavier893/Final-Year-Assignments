@@ -41,6 +41,7 @@
             end interface
 
             ! Prompt the user to enter the number of elements
+            ! This is a comment
             print *, "Enter the number of elements:"
             read *, num_elements
 
