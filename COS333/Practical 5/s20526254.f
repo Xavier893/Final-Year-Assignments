@@ -48,7 +48,7 @@
             allocate(arr(num_elements))
 
             ! Call the readData subroutine
-            call readData(arr, num_elements)
+           call readData(arr, num_elements)
 
             ! Find the smallest and largest values
             call findSmallest(arr, smallest)
@@ -63,7 +63,7 @@
             print *, "Mode value:", mode_val
 
             ! Deallocate the array
-            deallocate(arr)
+           deallocate(arr)
         end program SimpleStats
 
         ! Subprogram to read data into the array
