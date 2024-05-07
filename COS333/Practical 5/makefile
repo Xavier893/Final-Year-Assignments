@@ -6,7 +6,7 @@ FFLAGS = -o s20526254
 
 # Compiler and flags for COBOL
 COBC = cobc
-COBFLAGS = -x -free -o SimpleStats
+COBFLAGS = -x -fixed -o SimpleStats
 
 # Default target to compile both programs
 all: fortran cobol
