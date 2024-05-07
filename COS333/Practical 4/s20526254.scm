@@ -10,7 +10,7 @@
     (else (cons (car lst) (stripNegativesDuplicateEvens (cdr lst))))))
 
 (stripNegativesDuplicateEvens '())
-(stripNegativesDuplicateEvens '(-1 -2 -3))
-(stripNegativesDuplicateEvens '(1 2 -2 3 -3 4 5 -6))
-(stripNegativesDuplicateEvens '(4 2 -2 3 -3 8 5 -6 1 7 9 10))
+(stripNegativesDuplicateEvens '(-6 1))
+(stripNegativesDuplicateEvens '(6 8))
+(stripNegativesDuplicateEvens '(4 -1 9))
 (stripNegativesDuplicateEvens '(10 -1 9 6 7 8 5 2 3 4 1 0))
