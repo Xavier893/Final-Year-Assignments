@@ -25,6 +25,8 @@
             PERFORM FINDLARGEST.
             PERFORM MODEARR.
 
+            *> Adding a comment to test if I can upload from local
+
             DISPLAY "Smallest value: " SMALLEST.
             DISPLAY "Largest value: " LARGEST.
             DISPLAY "Mode value: " MODE-VAL.
