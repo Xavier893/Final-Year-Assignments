@@ -2,10 +2,6 @@
 use strict;
 use warnings;
 
-if (@ARGV != 2) {
-  die "Usage: perl script.pl <filename> <word>\n";
-}
-
 my ($filename, $searchWord) = @ARGV;
 
 open my $fh, '<', $filename or die "Could not open file '$filename' $!";
