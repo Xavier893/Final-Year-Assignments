@@ -21,4 +21,20 @@
 
   echo "Search Word: $searchWord\n";
   echo "Matches: $matches\n";
+
+  $output = "<!DOCTYPE html>
+  <html>
+  <head>
+      <title>Word Count</title>
+  </head>
+  <body>
+      <p>Matches: $matches</p>
+  </body>
+  </html>\n";
+  
+  $outputFile = 'output.html';
+  file_put_contents($outputFile, $output);
+  echo "\nOutput written to $outputFile\n";
+
+  exit(0);
 ?>
