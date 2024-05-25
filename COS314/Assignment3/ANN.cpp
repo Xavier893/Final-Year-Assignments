@@ -254,7 +254,9 @@ int main() {
     }
   }
   double accuracy = (double)correctPredictions / testingData.size() * 100.0;
-  cout << "Test Accuracy: " << accuracy << "%" << endl;
+  cout << "---------------------------\n";
+  cout << "ANN Test Accuracy: " << accuracy << "%" << endl;
+  cout << "---------------------------\n";
 
   return 0;
 }
