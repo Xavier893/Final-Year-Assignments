@@ -101,18 +101,21 @@ public:
 
   double sigmoidDerivative(double x) { return sigmoid(x) * (1.0 - sigmoid(x)); }
 
-  void trainNeuralNetwork(vector<DataPoint> &trainingData, int epochs) {
+  void trainNeuralNetwork(vector<DataPoint> &trainingData, int epochs,
+                          int seed) {
     vector<double> minValues(8, numeric_limits<double>::max());
     vector<double> maxValues(8, numeric_limits<double>::lowest());
     calculateMinMaxValues(trainingData, minValues, maxValues);
 
+    mt19937 g(seed);
+
     for (int epoch = 0; epoch < epochs; epoch++) {
-      random_device rd;
-      mt19937 g(rd());
       shuffle(trainingData.begin(), trainingData.end(), g);
       double error = 0.0;
       hiddenLayerOutput = vector<double>(hiddenSize, 0.0);
       predictedOutput = vector<double>(outputSize, 0.0);
+      outputErrors = vector<double>(outputSize, 0.0);
+      hiddenErrors = vector<double>(hiddenSize, 0.0);
 
       for (const DataPoint &point : trainingData) {
 
@@ -237,9 +240,10 @@ int main() {
   int outputSize = 1;
   double learningRate = 0.01;
   int epochs = 500;
+  int seed = 42566;
 
   NeuralNetwork nn(inputSize, hiddenSize, outputSize, learningRate);
-  nn.trainNeuralNetwork(trainingData, epochs);
+  nn.trainNeuralNetwork(trainingData, epochs, seed);
 
   // NOTE: Testing data and accuracy
   vector<DataPoint> testingData = readData("mushroom_test.csv");
@@ -247,15 +251,45 @@ int main() {
   normalizeData(testingData, minValues, maxValues);
 
   int correctPredictions = 0;
+  int truePositives = 0;
+  int falsePositives = 0;
+  int falseNegatives = 0;
+
   for (const DataPoint &point : testingData) {
     int predictedLabel = nn.predict(point);
     if (predictedLabel == point.class_label) {
       correctPredictions++;
+      if (predictedLabel == 1) {
+        truePositives++;
+      }
+    } else {
+      if (predictedLabel == 1)
+        falsePositives++;
+      else
+        falseNegatives++;
     }
   }
+
+  double precision =
+      (truePositives + falsePositives == 0)
+          ? 0.0
+          : (double)truePositives / (truePositives + falsePositives);
+  double recall =
+      (truePositives + falseNegatives == 0)
+          ? 0.0
+          : (double)truePositives / (truePositives + falseNegatives);
+  double fMeasure = (precision + recall == 0)
+                        ? 0.0
+                        : 2 * (precision * recall) / (precision + recall);
+
   double accuracy = (double)correctPredictions / testingData.size() * 100.0;
   cout << "---------------------------\n";
   cout << "ANN Test Accuracy: " << accuracy << "%" << endl;
+  cout << "Seed Value Used: " << seed << endl;
+  cout << "Precision: " << precision << endl;
+  cout << "Recall: " << recall << endl;
+  cout << "F-Measure: " << fMeasure << endl;
+  cout << "Seed Value Used: " << seed << endl;
   cout << "---------------------------\n";
 
   return 0;
